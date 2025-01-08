@@ -2,12 +2,6 @@ import { fetchMovies, fetchMovieDetails } from './api.js';
 
 // Fetch trending movies when the page loads
 window.onload = async () => {
-    // Get user info from local storage
-    const user = localStorage.getItem('user');
-    if (user) {
-        document.getElementById('user-info').innerText = `Logged in as: ${user}`;
-    }
-
     // Default theme is dark
     const theme = 'dark'; // Set default to dark theme
     setTheme(theme);
@@ -88,7 +82,10 @@ function displayMovieDetails(movie) {
     `;
     
     // Show the modal with the movie details and trailer
-    document.getElementById("movie-details-modal").classList.remove("hidden");
+    const modal = document.getElementById("movie-details-modal");
+    modal.classList.remove("hidden");
+    // Prevent page scrolling when modal is open
+    document.body.style.overflow = "hidden";
 }
 
 // Close the movie details modal and stop the trailer
@@ -99,7 +96,11 @@ document.getElementById("close-modal").addEventListener("click", () => {
     // Stop the trailer by resetting the iframe src
     iframe.src = "";
 
+    // Hide the modal
     modal.classList.add("hidden");
+    
+    // Allow page scrolling again
+    document.body.style.overflow = "auto";
 });
 
 // Handle the search functionality
