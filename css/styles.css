@@ -1,77 +1,43 @@
-/* styles.css */
+#movie-details-modal {
+    position: absolute; 
+    background-color: rgba(0, 0, 0, 0.8); 
+    display: none;
+    width: 80%;
+    max-width: 900px;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1000; 
+}
 
-/* Custom Styles for the Movie Database App */
+#movie-details-container {
+    background-color: #2d2d2d;
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    position: relative;
+}
+
+#movie-details-container iframe {
+    width: 100%;
+    height: 450px;
+    border-radius: 10px;
+}
 
 body {
-    font-family: 'Arial', sans-serif;
+    overflow: auto;
 }
 
-/* Add some custom spacing for the container */
-#movies-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-}
-
-.movie-card {
-    background-color: #1c1c1c;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease;
-    cursor: pointer;
-}
-
-.movie-card:hover {
-    transform: scale(1.05);
-}
-
-.movie-card img {
-    width: 100%;
-    border-radius: 5px;
-}
-
-.movie-card h3 {
-    margin-top: 10px;
-    font-size: 1.25rem;
-}
-
-.movie-details-modal {
-    position: fixed;
+#movie-details-modal .overlay {
+    position: fixed; 
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: -1; 
 }
 
-.movie-details-modal.visible {
-    display: flex;
-}
-
-.modal-content {
-    background-color: #2b2b2b;
-    color: white;
-    padding: 20px;
-    border-radius: 10px;
-    max-width: 600px;
-    width: 100%;
-}
-
-.modal-content img {
-    max-width: 200px;
-    border-radius: 5px;
-}
-
-.modal-close-button {
-    background-color: red;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
+body.modal-open {
+    overflow: hidden;
 }

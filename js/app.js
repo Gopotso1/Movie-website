@@ -1,12 +1,12 @@
+// Fetch movies when the page loads
 import { fetchMovies, fetchMovieDetails } from './api.js';
 
-// Fetch trending movies when the page loads
 window.onload = async () => {
-    // Default theme is dark
-    const theme = 'dark'; // Set default to dark theme
+    // Theme
+    const theme = 'dark';
     setTheme(theme);
 
-    // Fetch and display trending movies
+    // Fetch and show trending movies
     const trendingMovies = await fetchTrendingMovies();
     if (trendingMovies && trendingMovies.length > 0) {
         displayMovies(trendingMovies);
@@ -21,7 +21,7 @@ async function fetchTrendingMovies() {
     try {
         const response = await fetch(url);
         const data = await response.json();
-        console.log("Trending Movies:", data);  // Debugging output
+        console.log("Trending Movies:", data);
         if (data.results) {
             return data.results;
         } else {
@@ -33,7 +33,7 @@ async function fetchTrendingMovies() {
     }
 }
 
-// Display movies in the container
+// Display movies in container
 function displayMovies(movies) {
     const moviesContainer = document.getElementById("movies-container");
     moviesContainer.innerHTML = ""; // Clear previous movies
@@ -43,10 +43,9 @@ function displayMovies(movies) {
         return;
     }
 
-    // Update the container to use a grid with 5 columns
+    // Container to use a grid with 5 columns for movies
     moviesContainer.classList.add("grid", "grid-cols-1", "sm:grid-cols-2", "md:grid-cols-3", "lg:grid-cols-5", "gap-4");
 
-    // Loop through each movie and add to the grid
     movies.forEach((movie) => {
         const movieElement = document.createElement("div");
         movieElement.classList.add("p-2", "cursor-pointer");
@@ -58,59 +57,76 @@ function displayMovies(movies) {
         `;
         movieElement.addEventListener("click", async () => {
             const movieDetails = await fetchMovieDetails(movie.id);
-            displayMovieDetails(movieDetails);
+            displayMovieDetails(movieDetails, movieElement); 
         });
 
         moviesContainer.appendChild(movieElement);
     });
 }
 
-// Show movie details in the modal
-function displayMovieDetails(movie) {
+// Show movie details
+function displayMovieDetails(movie, movieElement) {
     const movieDetailsContainer = document.getElementById("movie-details-container");
-    const trailerKey = movie.videos.results[0]?.key; // Get the trailer key
+    const trailerKey = movie.videos.results[0]?.key; // Get the trailer
 
-    movieDetailsContainer.innerHTML = `
-        <h3 class="text-xl font-bold">${movie.title}</h3>
-        <p>${movie.overview}</p>
-        <h4 class="font-semibold mt-4">Trailer:</h4>
-        <iframe id="movie-trailer" width="100%" height="315" 
-            src="https://www.youtube.com/embed/${trailerKey}?autoplay=1" 
-            frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-        </iframe>
-    `;
-    
-    // Show the modal with the movie details and trailer
+    // Clear the page content first
+    movieDetailsContainer.innerHTML = "";
+
+    // Check if trailer does exist
+    if (trailerKey) {
+        movieDetailsContainer.innerHTML = `
+            <h3 class="text-xl font-bold">${movie.title}</h3>
+            <p>${movie.overview}</p>
+            <h4 class="font-semibold mt-4">Trailer:</h4>
+            <iframe id="movie-trailer" src="https://www.youtube.com/embed/${trailerKey}?autoplay=1" 
+                frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
+        `;
+    } else {
+        movieDetailsContainer.innerHTML = `
+            <h3 class="text-xl font-bold">${movie.title}</h3>
+            <p>${movie.overview}</p>
+            <p class="text-red-500 mt-4">No trailer available for this movie.</p>
+        `;
+    }
+
+    // Get the position of the movie clicked
+    const rect = movieElement.getBoundingClientRect();
     const modal = document.getElementById("movie-details-modal");
+
+    // Set the modal position based on the clicked movie element
+    modal.style.top = `${rect.top + window.scrollY}px`; 
+    modal.style.left = `${rect.left}px`; // Position trailer page where the movie was clicked
+
+    // Show the page with movie details and trailer
     modal.classList.remove("hidden");
-    // Prevent page scrolling when modal is open
+
+    // Prevent page scrolling when trailer is open
     document.body.style.overflow = "hidden";
 }
 
-// Close the movie details modal and stop the trailer
+// Close the movie details and stops trailer
 document.getElementById("close-modal").addEventListener("click", () => {
     const modal = document.getElementById("movie-details-modal");
     const iframe = document.getElementById("movie-trailer");
-    
-    // Stop the trailer by resetting the iframe src
+
+    // Stop the trailer 
     iframe.src = "";
 
-    // Hide the modal
     modal.classList.add("hidden");
-    
-    // Allow page scrolling again
+
     document.body.style.overflow = "auto";
 });
 
-// Handle the search functionality
+// Search functionality
 document.getElementById("search").addEventListener("input", async (event) => {
     const query = event.target.value.trim();
-    if (query.length >= 3) { // Trigger search when user types 3 or more characters
+    if (query.length >= 3) { 
         const movies = await fetchMovies(query);
         displayMovies(movies);
     } else {
-        // Display trending movies if search is empty or too short
+        // Display trending movies if search is empty
         const trendingMovies = await fetchTrendingMovies();
         displayMovies(trendingMovies);
     }
@@ -122,11 +138,11 @@ function displayError(message) {
     moviesContainer.innerHTML = `<p class='text-white'>${message}</p>`;
 }
 
-// Logout button functionality
+// Logout button
 document.getElementById("logout").addEventListener("click", () => {
     localStorage.removeItem('user');
-    localStorage.removeItem('theme'); // Optional: Clear the theme setting on logout
-    window.location.href = "index.html"; // Redirect to index.html
+    localStorage.removeItem('theme'); 
+    window.location.href = "index.html"; 
 });
 
 // Set the theme (dark by default)

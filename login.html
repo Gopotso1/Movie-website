@@ -3,13 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - MovieDB</title>
+    <title>Login - Epic Movies</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+     
+        .bg-image {
+            background-image: url('images/background.jpeg');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
 </head>
-<body class="bg-black text-white flex justify-center items-center min-h-screen">
-    <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full sm:w-96">
-        <h2 class="text-3xl mb-6 text-center font-bold">Login to MovieDB</h2>
-        <form id="loginForm">
+<body class="bg-black text-white bg-image flex justify-center items-center min-h-screen">
+   
+    <div class="absolute top-0 left-0 w-full h-full bg-black opacity-50"></div>
+
+    <!-- Forms -->
+    <div class="relative z-10 bg-gray-800 p-8 rounded-lg shadow-lg w-full sm:w-96">
+        <h2 class="text-3xl mb-6 text-center font-bold">Login to Epic Movies</h2>
+        <form id="login-form" method="POST">
             <div class="mb-4">
                 <label for="email" class="block text-sm font-semibold">Email</label>
                 <input type="email" id="email" class="w-full p-3 mt-1 text-gray-900 rounded-md" required>
@@ -24,6 +36,23 @@
             Don't have an account? <a href="signup.html" class="text-red-500 hover:underline">Sign Up</a>
         </p>
     </div>
+
+    <script>
+
+        // Handle the login form submission
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (email && password) {
+            
+                window.location.href = 'movieDetails.html';
+            } else {
+                alert('Please fill in all fields.');
+            }
+        });
+    </script>
 </body>
-<script src="js/auth.js"></script>
 </html>
